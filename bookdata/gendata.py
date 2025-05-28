@@ -1,39 +1,53 @@
 import os
-import json
 import pandas as pd
-from utils.db_utils import DatabaseHandler
-from utils.es_utils import ElasticsearchHandler
 
-class BookDataProcessor:
-    def __init__(self):
-        self.db_handler = DatabaseHandler()
-        self.es_handler = ElasticsearchHandler()
-        
-    def download_data(self):
-        """從網路下載書籍資料"""
-        # TODO: 實現資料下載邏輯
-        pass
-        
-    def preprocess_data(self, raw_data):
-        """資料預處理"""
-        # TODO: 實現資料清理和轉換邏輯
-        pass
-        
-    def save_to_database(self, processed_data):
-        """將處理後的資料存入資料庫"""
-        self.db_handler.save_books(processed_data)
-        
-    def index_to_elasticsearch(self, processed_data):
-        """將資料索引到 Elasticsearch"""
-        self.es_handler.index_books(processed_data)
-        
-    def run_pipeline(self):
-        """執行完整的資料處理流程"""
-        raw_data = self.download_data()
-        processed_data = self.preprocess_data(raw_data)
-        self.save_to_database(processed_data)
-        self.index_to_elasticsearch(processed_data)
+RAW_DIR = 'data/raw'
+OUTPUT_DIR = 'data/processed'
 
-if __name__ == "__main__":
-    processor = BookDataProcessor()
-    processor.run_pipeline()
+# 清洗設定
+REQUIRED_COLUMNS = ['書名', '作者', 'ISBN', '出版日期', '出版社']
+ENCODING = 'utf-8-sig'  # 如果中文亂碼可試 'big5' 或 'utf-8-sig'
+
+def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    # 去除空白欄位名稱
+    df.columns = [col.strip() for col in df.columns]
+
+    # 移除不需要欄位（如有）
+    df = df[[col for col in df.columns if col in REQUIRED_COLUMNS]]
+
+    # 移除完全空值的行
+    df.dropna(how='all', inplace=True)
+
+    # 去除重複書籍（根據書名 + 作者）
+    df.drop_duplicates(subset=['書名', '作者'], inplace=True)
+
+    # 替換空字串為 NaN，並移除重要欄位空值
+    df.replace('', pd.NA, inplace=True)
+    df.dropna(subset=['書名', 'ISBN'], inplace=True)
+
+    # 去除前後空白字元
+    for col in df.select_dtypes(include='object'):
+        df[col] = df[col].str.strip()
+
+    return df.reset_index(drop=True)
+
+def main():
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    for filename in os.listdir(RAW_DIR):
+        if filename.endswith('.csv'):
+            raw_path = os.path.join(RAW_DIR, filename)
+            print(f'📥 讀取檔案: {raw_path}')
+
+            df = pd.read_csv(raw_path, encoding=ENCODING)
+
+            df_clean = clean_dataframe(df)
+
+            out_path = os.path.join(OUTPUT_DIR, f'cleaned_{filename}')
+            df_clean.to_csv(out_path, index=False, encoding='utf-8-sig')
+
+            print(f'✅ 清洗完成，已輸出到: {out_path}\n')
+
+if __name__ == '__main__':
+    main()
