@@ -1,2 +1,4 @@
-package tw.ispan.librarysystem.view.books;public class UpdateBook {
+package tw.ispan.librarysystem.view.books;
+
+public class UpdateBook {
 }

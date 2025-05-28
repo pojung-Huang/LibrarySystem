@@ -1,2 +1,4 @@
-package tw.ispan.librarysystem.view.account;public class BanAccount {
+package tw.ispan.librarysystem.view.account;
+
+public class BanAccount {
 }
