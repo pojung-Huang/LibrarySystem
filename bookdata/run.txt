@@ -1,0 +1,10 @@
+# 進入虛擬環境
+    pipenv shell
+
+# 跑前處理
+    python gendata
+
+
+
+# 有 install 套件記得存到requirements.txt
+    pip freeze >requirements.txt 
