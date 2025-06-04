@@ -19,6 +19,12 @@ cursor = conn.cursor()
 
 def save_to_mysql(books_data):
     try:
+        print("清空資料表")
+        # 先清空資料表
+        cursor.execute("TRUNCATE TABLE LibraryBooks")
+        conn.commit()
+        print("資料表清空完成")
+
         print("開始存入資料庫")
         print(f"存入資料庫時間: {datetime.now()}")
 
@@ -44,6 +50,10 @@ def save_to_mysql(books_data):
         print(f"❌ 資料庫儲存錯誤: {str(e)}")
         raise e
 
+
+if __name__ == '__main__':
+    # main()
+    save_to_mysql()
 
 """
 CREATE TABLE `LibraryBooks` (
