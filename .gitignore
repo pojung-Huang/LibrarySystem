@@ -61,3 +61,6 @@ bookdata/data/raw/*
 bookdata/data/processed/*
 !bookdata/data/raw/.gitkeep
 bookdata/.env
+
+# Elasticsearch 帳號密碼
+els_account.txt
