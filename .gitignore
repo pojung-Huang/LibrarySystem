@@ -57,7 +57,7 @@ Pipfile
 Pipfile.lock
 
 # 資料檔案
-bookdata/data/raw/*
+# bookdata/data/raw/*
 bookdata/data/processed/*
 !bookdata/data/raw/.gitkeep
 bookdata/.env
