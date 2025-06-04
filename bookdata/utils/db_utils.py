@@ -25,7 +25,7 @@ def save_to_mysql(books_data):
         print(f"存入資料庫時間: {datetime.now()}")
 
         sql = """
-                INSERT INTO library_books (isbn, title, author, publisher, publishdate)
+                INSERT INTO LibraryBooks (isbn, title, author, publisher, publishdate)
                 VALUES (%s, %s, %s, %s, %s)
                 """
 
