@@ -1,10 +1,5 @@
-# 進入虛擬環境
-    pipenv shell
-
-# 跑前處理
+# 執行前處理 > 存到 DB > 存到 elasticsearch
     python gendata
-
-
 
 # 有 install 套件記得存到requirements.txt
     pip freeze >requirements.txt 
