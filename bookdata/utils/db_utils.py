@@ -45,3 +45,23 @@ def save_to_mysql(books_data):
     except Exception as e:
         print(f"❌ 資料庫儲存錯誤: {str(e)}")
         raise e
+
+
+"""
+-- library.LibraryBooks definition
+
+CREATE TABLE `LibraryBooks` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `isbn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `author` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `publishdate` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `publisher` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `title` text COLLATE utf8mb4_unicode_ci,
+    PRIMARY KEY (`id`),
+    KEY `idx_isbn` (`isbn`),
+    KEY `idx_author` (`author`),
+    KEY `idx_title` (`title`(255))
+)   ENGINE=InnoDB AUTO_INCREMENT=1534509 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+"""
