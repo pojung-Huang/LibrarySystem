@@ -1,8 +1,6 @@
-# from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import mysql.connector
 import os
-# import json
 from datetime import datetime
 
 
@@ -48,20 +46,18 @@ def save_to_mysql(books_data):
 
 
 """
--- library.LibraryBooks definition
-
 CREATE TABLE `LibraryBooks` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `isbn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `title` text COLLATE utf8mb4_unicode_ci,
     `author` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `publisher` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `publishdate` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `publisher` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    `title` text COLLATE utf8mb4_unicode_ci,
     PRIMARY KEY (`id`),
     KEY `idx_isbn` (`isbn`),
     KEY `idx_author` (`author`),
     KEY `idx_title` (`title`(255))
-)   ENGINE=InnoDB AUTO_INCREMENT=1534509 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ) ENGINE=InnoDB AUTO_INCREMENT=1534509 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """
