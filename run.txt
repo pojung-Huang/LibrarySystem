@@ -1,13 +1,17 @@
 LibrarySystem-backend:
     啟動:
         npm run dev
+
     位置:
         http://localhost:8080
 
 
-elastsearch server:
-    啟動:
+服務 :
+    run:
         docker-compose up -d
+
+    remove:
+        docker-compose down -v
 
     位置:
         http://localhost:5601
