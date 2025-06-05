@@ -51,10 +51,20 @@ def save_to_mysql(books_data):
         raise e
 
 
-if __name__ == '__main__':
-    # main()
-    save_to_mysql()
+# if __name__ == '__main__':
+#     # 測試 將 all_books 存入資料庫 
+#     import json
+#     with open('data/processed/all_books.json', 'r', encoding='utf-8') as f:
+#         all_books = json.load(f)
 
+#     print(f"books_data 長度: {len(all_books)}")
+#     save_to_mysql(all_books)
+#     cursor.execute("SELECT max(id) FROM LibraryBooks")
+#     result = cursor.fetchone()
+#     print(f"資料表總筆數: {result[0]}")
+
+
+# 建立LibraryBooks table 的 sql 語法
 """
 CREATE TABLE `LibraryBooks` (
     `id` bigint NOT NULL AUTO_INCREMENT,
