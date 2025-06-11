@@ -2,10 +2,7 @@ package tw.ispan.librarysystem.captcha.controller;
 
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -15,22 +12,23 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/captcha")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000") // 根據你的 Nuxt 前端開發網址
 public class CaptchaController {
 
     @Autowired
     private Producer captchaProducer;
 
-    @GetMapping("/api/captcha")
+    @GetMapping
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String captchaText = captchaProducer.createText();
-        BufferedImage captchaImage = captchaProducer.createImage(captchaText);
+        response.setContentType("image/jpeg");
 
-        // 儲存驗證碼到 session，前端提交時可以比對
+        // 產生驗證碼文字
+        String captchaText = captchaProducer.createText();
+        // 存入 Session 供後續驗證使用
         request.getSession().setAttribute("captcha", captchaText);
 
-        // 回傳圖片
-        response.setContentType("image/jpeg");
+        // 產生驗證碼的圖ㄆ
+        BufferedImage captchaImage = captchaProducer.createImage(captchaText);
         ImageIO.write(captchaImage, "jpg", response.getOutputStream());
     }
 }
