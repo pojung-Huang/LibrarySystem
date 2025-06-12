@@ -1,8 +1,8 @@
-package tw.ispan.librarysystem.zipcode.service;
+package tw.ispan.librarysystem.service.zipcode;
 
 import org.springframework.stereotype.Service;
-import tw.ispan.librarysystem.zipcode.entity.TwZipcode;
-import tw.ispan.librarysystem.zipcode.repository.TwZipcodeRepository;
+import tw.ispan.librarysystem.entity.zipcode.TwZipcode;
+import tw.ispan.librarysystem.repository.zipcode.TwZipcodeRepository;
 
 import java.util.List;
 
