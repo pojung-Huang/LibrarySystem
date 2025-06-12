@@ -1,4 +1,4 @@
-package tw.ispan.librarysystem.zipcode.entity;
+package tw.ispan.librarysystem.entity.zipcode;
 
 import jakarta.persistence.*;
 import lombok.*;

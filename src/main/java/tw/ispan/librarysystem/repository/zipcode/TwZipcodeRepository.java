@@ -1,8 +1,8 @@
-package tw.ispan.librarysystem.zipcode.repository;
+package tw.ispan.librarysystem.repository.zipcode;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tw.ispan.librarysystem.zipcode.entity.TwZipcode;
+import tw.ispan.librarysystem.entity.zipcode.TwZipcode;
 
 import java.util.List;
 

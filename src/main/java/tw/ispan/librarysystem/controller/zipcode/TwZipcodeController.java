@@ -1,7 +1,7 @@
-package tw.ispan.librarysystem.zipcode.controller;
+package tw.ispan.librarysystem.controller.zipcode;
 
 import org.springframework.web.bind.annotation.*;
-import tw.ispan.librarysystem.zipcode.service.TwZipcodeService;
+import tw.ispan.librarysystem.service.zipcode.TwZipcodeService;
 
 import java.util.List;
 
