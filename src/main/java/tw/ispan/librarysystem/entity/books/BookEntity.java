@@ -2,9 +2,11 @@ package tw.ispan.librarysystem.entity.books;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import tw.ispan.librarysystem.entity.books.BookEntity;
+
 
 @Entity
-@Table(name = "books")
+@Table(name = "books")  // 修改為 books 表
 public class BookEntity {
 
     @Id
