@@ -14,19 +14,29 @@ public class BookEntity {
     @Column(name = "book_id")
     private Integer bookId;
 
+    @Column(name = "isbn")
     private String isbn;
+
     @Column(columnDefinition = "text")
     private String title;
-    private String author;
-    private String publisher;
-    private String publishdate;
-    private String version;
-    private String type;
-    private String language;
-    private String classification;
 
-    @Column(name = "c_id")
-    private Integer cId;
+    @Column(name = "author")
+    private String author;
+
+    @Column(name = "publisher")
+    private String publisher;
+
+    @Column(name = "publishdate")
+    private String publishdate;
+
+    @Column(name = "version")
+    private String version;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "language")
+    private String language;
 
     @Column(name = "is_available")
     private Boolean isAvailable;
@@ -37,7 +47,9 @@ public class BookEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Getters and Setters
+    @Column(name = "classification")
+    private String classification;
+
     public Integer getBookId() {
         return bookId;
     }
@@ -118,14 +130,6 @@ public class BookEntity {
         this.classification = classification;
     }
 
-    public Integer getcId() {
-        return cId;
-    }
-
-    public void setcId(Integer cId) {
-        this.cId = cId;
-    }
-
     public Boolean getIsAvailable() {
         return isAvailable;
     }
@@ -149,4 +153,17 @@ public class BookEntity {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-}
+
+    //---------------------
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "c_id")
+    private CategoryEntity category;
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
+    }
+} 
