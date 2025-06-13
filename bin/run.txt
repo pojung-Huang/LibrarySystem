@@ -1,0 +1,20 @@
+LibrarySystem-backend:
+    啟動:
+        npm run dev
+
+    位置:
+        http://localhost:8080
+
+
+服務 :
+    run:
+        docker-compose up -d
+
+    remove:
+        docker-compose down -v
+
+    位置:
+        http://localhost:5601
+
+    開發工具 dev tool
+        http://localhost:5601/app/dev_tools#/console
