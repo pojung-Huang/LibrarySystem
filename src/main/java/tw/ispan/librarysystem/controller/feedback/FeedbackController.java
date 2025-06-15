@@ -1,11 +1,13 @@
 package tw.ispan.librarysystem.controller.feedback;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tw.ispan.librarysystem.dto.feedback.FeedbackFormDto;
 
 import jakarta.servlet.http.HttpSession;
+import tw.ispan.librarysystem.dto.feedback.FeedbackReplyDto;
 import tw.ispan.librarysystem.entity.feedback.Feedback;
 import tw.ispan.librarysystem.repository.feedback.FeedbackRepository;
 
@@ -17,8 +19,11 @@ public class FeedbackController {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
+    @Autowired
+    private FeedbackService feedbackService; // 加入服務層
+
     @PostMapping
-    public ResponseEntity<String> submitFeedback(@RequestBody FeedbackFormDto form, HttpSession session) {
+    public ResponseEntity<String> submitFeedback(@Valid @RequestBody FeedbackFormDto form, HttpSession session) {
         // 驗證驗證碼
         String expectedCaptcha = (String) session.getAttribute("captcha");
         if (expectedCaptcha == null || !expectedCaptcha.equalsIgnoreCase(form.getCaptcha())) {
@@ -40,5 +45,16 @@ public class FeedbackController {
         feedbackRepository.save(feedback);
 
         return ResponseEntity.ok("留言已成功送出");
+    }
+
+    // 管理員回覆
+    @PostMapping("/reply")
+    public ResponseEntity<String> replyToFeedback(@Valid @RequestBody FeedbackReplyDto dto) {
+        boolean success = feedbackService.replyToFeedback(dto);
+        if (success) {
+            return ResponseEntity.ok("回覆成功");
+        } else {
+            return ResponseEntity.badRequest().body("找不到該留言");
+        }
     }
 }
