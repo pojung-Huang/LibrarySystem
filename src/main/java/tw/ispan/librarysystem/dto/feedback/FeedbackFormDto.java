@@ -1,70 +1,36 @@
 package tw.ispan.librarysystem.dto.feedback;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class FeedbackFormDto {
+
+    @NotBlank(message = "姓名不能為空")
     private String name;
+
     private String cardNumber;
+
+    @NotBlank(message = "電話不能為空")
     private String phone;
+
+    @NotBlank(message = "Email 不能為空")
+    @Email(message = "Email 格式不正確")
     private String email;
+
+    @NotBlank(message = "主旨不能為空")
     private String subject;
 
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @NotBlank(message = "內容不能為空")
+    @Size(max = 1000, message = "內容不能超過 1000 字")
     private String content;
+
+    @NotBlank(message = "請輸入驗證碼")
     private String captcha;
 
 }

@@ -5,10 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {
-    "tw.ispan.librarysystem.repository",
-    "tw.ispan.librarysystem.zipcode.repository"
-})
 public class LibrarySystemApplication {
 
     public static void main(String[] args) {
