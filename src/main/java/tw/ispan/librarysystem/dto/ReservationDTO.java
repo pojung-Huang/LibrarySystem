@@ -1,56 +1,62 @@
 package tw.ispan.librarysystem.dto;
 
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationDTO {
+    @JsonProperty("reservation_id")
     private Integer reservationId;
-    private String status;
-    private String bookTitle;
+    
+    @JsonProperty("user_id")
+    private Integer userId;
+    
+    @JsonProperty("reservation_date")
     private LocalDateTime reservationDate;
+    
+    @JsonProperty("expiry_date")
+    private LocalDateTime expiryDate;
+    
+    private String status;
+    
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+    
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
+    
+    // Book information
+    @JsonProperty("book_id")
+    private Integer bookId;
+    
+    private String title;
+    private String author;
+    private String isbn;
+    private String publisher;
+    private String classification;
+    
+    @JsonProperty("category_name")
+    private String categoryName;
 
-    public ReservationDTO(Integer reservationId, String status, String bookTitle) {
+    // 新增取書相關欄位
+    @JsonProperty("pickup_location")
+    private String pickupLocation;
+    
+    @JsonProperty("pickup_time")
+    private LocalDateTime pickupTime;
+
+    // ✅ 新增這段 constructor 給 JPQL 使用
+    public ReservationDTO(Integer reservationId, String status, String title, LocalDateTime reservationDate) {
         this.reservationId = reservationId;
         this.status = status;
-        this.bookTitle = bookTitle;
-    }
-
-    public ReservationDTO(Integer reservationId, String status, String bookTitle, LocalDateTime reservationDate) {
-        this.reservationId = reservationId;
-        this.status = status;
-        this.bookTitle = bookTitle;
-        this.reservationDate = reservationDate;
-    }
-
-    // Getters and Setters
-    public Integer getReservationId() {
-        return reservationId;
-    }
-
-    public void setReservationId(Integer reservationId) {
-        this.reservationId = reservationId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getBookTitle() {
-        return bookTitle;
-    }
-
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
-
-    public LocalDateTime getReservationDate() {
-        return reservationDate;
-    }
-
-    public void setReservationDate(LocalDateTime reservationDate) {
+        this.title = title;
         this.reservationDate = reservationDate;
     }
 }
