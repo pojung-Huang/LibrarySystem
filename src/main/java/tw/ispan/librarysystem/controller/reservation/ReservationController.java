@@ -4,7 +4,7 @@ package tw.ispan.librarysystem.controller.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tw.ispan.librarysystem.dto.ReservationDTO;
+import tw.ispan.librarysystem.dto.reservation.ReservationDTO;
 import tw.ispan.librarysystem.entity.reservation.ReservationEntity;
 import tw.ispan.librarysystem.repository.reservation.ReservationRepository;
 import tw.ispan.librarysystem.service.ReservationService;
@@ -25,11 +25,6 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationDTO> getAllReservations() {
-        return reservationService.getAllReservationsWithBookInfo();
-    }
-
-    @GetMapping("/with-book")
-    public List<ReservationDTO> getAllReservationsWithBook() {
         return reservationService.getAllReservationsWithBookInfo();
     }
 

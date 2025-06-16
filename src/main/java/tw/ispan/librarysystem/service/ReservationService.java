@@ -3,7 +3,7 @@ package tw.ispan.librarysystem.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tw.ispan.librarysystem.dto.ReservationDTO;
+import tw.ispan.librarysystem.dto.reservation.ReservationDTO;
 import tw.ispan.librarysystem.entity.reservation.ReservationEntity;
 import tw.ispan.librarysystem.repository.reservation.ReservationRepository;
 
