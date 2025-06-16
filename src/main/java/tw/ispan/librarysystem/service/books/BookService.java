@@ -93,6 +93,9 @@ public class BookService {
                             // 解析失敗可略過
                         }
                         break;
+                    case "language":
+                        p = cb.equal(cb.lower(root.get("language")), cond.getValue().toLowerCase());
+                        break;
                     // 其他欄位可依需求擴充
                 }
                 if (p != null) {
