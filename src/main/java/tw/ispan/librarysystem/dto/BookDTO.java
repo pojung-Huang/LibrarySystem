@@ -2,6 +2,10 @@ package tw.ispan.librarysystem.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import tw.ispan.librarysystem.entity.books.BookEntity;
+
 public class BookDTO {
     private Integer bookId;
     private String isbn;
@@ -13,13 +17,42 @@ public class BookDTO {
     private String type;
     private String language;
     private Integer cId;
+    @JsonProperty("is_available")
     private Boolean isAvailable;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String classification;
+    @JsonProperty("categorysystem")
+    private String categorysystem;
+
+    
 
     // 建構函數
     public BookDTO() {}
+
+    public BookDTO toDTO(BookEntity book) {
+        BookDTO dto = new BookDTO();
+        dto.setBookId(book.getBookId());
+        dto.setIsbn(book.getIsbn());
+        dto.setTitle(book.getTitle());
+        dto.setAuthor(book.getAuthor());
+        dto.setPublisher(book.getPublisher());
+        dto.setPublishdate(book.getPublishdate());
+        dto.setVersion(book.getVersion());
+        dto.setType(book.getType());
+        dto.setLanguage(book.getLanguage());
+        dto.setClassification(book.getClassification());
+        dto.setIsAvailable(book.getIsAvailable());
+        dto.setCreatedAt(book.getCreatedAt());
+        dto.setUpdatedAt(book.getUpdatedAt());
+        
+        
+        if (book.getCategory() != null && book.getCategory().getCategorysystem() != null) {
+            dto.setCategorysystem(book.getCategory().getCategorysystem().getCsName());
+        }
+    
+        return dto;
+    }
 
     // Getters
     public Integer getBookId() {
@@ -133,5 +166,13 @@ public class BookDTO {
 
     public void setClassification(String classification) {
         this.classification = classification;
+    }
+
+    public String getCategorysystem() {
+        return categorysystem;
+    }
+
+    public void setCategorysystem(String categorysystem) {
+        this.categorysystem = categorysystem;
     }
 } 

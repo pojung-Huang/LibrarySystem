@@ -62,7 +62,7 @@ public class CategorySystemEntity {
     
     //--------------------------------
     @OneToMany(
-        mappedBy      = "categorySystem",
+        mappedBy      = "categorysystem",
         cascade       = CascadeType.ALL,
         fetch         = FetchType.LAZY
     )

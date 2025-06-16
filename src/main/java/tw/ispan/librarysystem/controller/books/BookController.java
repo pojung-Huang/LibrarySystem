@@ -1,18 +1,29 @@
 package tw.ispan.librarysystem.controller.books;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import tw.ispan.librarysystem.dto.BookDTO;
 import tw.ispan.librarysystem.dto.PageResponseDTO;
-import tw.ispan.librarysystem.entity.books.BookEntity;
-import tw.ispan.librarysystem.service.books.BookService;
-import tw.ispan.librarysystem.mapper.BookMapper;
 import tw.ispan.librarysystem.dto.SearchCondition;
-import java.util.List;
+import tw.ispan.librarysystem.entity.books.BookEntity;
+import tw.ispan.librarysystem.mapper.BookMapper;
+import tw.ispan.librarysystem.repository.books.BookRepository;
+import tw.ispan.librarysystem.service.books.BookService;
 
 @RestController
 @RequestMapping("/api/books")
@@ -24,6 +35,24 @@ public class BookController {
     @Autowired
     private BookMapper bookMapper;
     
+    @GetMapping("/{bookId}")
+    public BookDTO getBookById(@PathVariable Integer bookId) {
+        BookEntity book = bookService.findById(bookId).orElse(null);
+        return bookMapper.toDTO(book);
+    }
+
+    @GetMapping("/isbn/{isbn}")
+    public ResponseEntity<BookDTO> getBookByIsbn(@PathVariable String isbn) {
+        Optional<BookEntity> optional = bookService.findByIsbn(isbn);
+    if (optional.isPresent()) {
+        BookDTO dto = bookMapper.toDTO(optional.get());
+        return ResponseEntity.ok(dto);
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+}
+
+
     @GetMapping("/simple-search")
     public PageResponseDTO<BookDTO> simpleSearch(
         @RequestParam String field,
@@ -53,9 +82,4 @@ public class BookController {
         return bookMapper.toPageDTO(bookPage);
     }
 
-    @GetMapping("/{bookId}")
-    public BookDTO getBookById(@PathVariable Integer bookId) {
-        BookEntity book = bookService.findById(bookId).orElse(null);
-        return bookMapper.toDTO(book);
-    }
 }

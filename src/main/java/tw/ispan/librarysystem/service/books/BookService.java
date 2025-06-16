@@ -46,6 +46,10 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
+    public Optional<BookEntity> findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
+    }
+
     public Page<BookEntity> advancedSearch(List<SearchCondition> conditions, Pageable pageable) {
         Specification<BookEntity> spec = buildSpecification(conditions);
         return bookRepository.findAll(spec, pageable);
@@ -118,6 +122,8 @@ public class BookService {
                     return cb.like(cb.lower(root.get("isbn")), "%" + keyword.toLowerCase() + "%");
                 case "classification":
                     return cb.equal(root.get("classification"), keyword);
+                case "categorysystem":
+                    return cb.like(cb.lower(root.get("categorysystem").get("csName")), "%" + keyword.toLowerCase() + "%");
                 // 其他欄位可依需求擴充
                 default:
                     return cb.conjunction();
