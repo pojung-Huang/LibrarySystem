@@ -154,8 +154,8 @@ public class BookEntity {
         this.updatedAt = updatedAt;
     }
 
-    //---------------------
-    @ManyToOne(fetch = FetchType.LAZY)
+    //---------------------多對一：一本書屬於一個分類
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "c_id")
     private CategoryEntity category;
 
@@ -166,4 +166,4 @@ public class BookEntity {
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
-} 
+}

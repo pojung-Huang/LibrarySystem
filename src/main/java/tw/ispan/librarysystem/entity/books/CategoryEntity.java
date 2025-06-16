@@ -67,15 +67,15 @@ public class CategoryEntity {
 
     //--------------------------------
     /** 下面這段就是跟 CategorySystem 的關聯： */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cs_id")
-    private CategorySystemEntity categorySystem;
+    private CategorySystemEntity categorysystem;
 
-    public CategorySystemEntity getCategorySystem() {
-        return categorySystem;
+    public CategorySystemEntity getCategorysystem() {
+        return categorysystem;
     }
 
-    public void setCategorySystem(CategorySystemEntity categorySystem) {
-        this.categorySystem = categorySystem;
+    public void setCategorysystem(CategorySystemEntity categorysystem) {
+        this.categorysystem = categorysystem;
     }
 }

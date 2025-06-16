@@ -1,13 +1,14 @@
 package tw.ispan.librarysystem.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
 import tw.ispan.librarysystem.dto.BookDTO;
 import tw.ispan.librarysystem.dto.PageResponseDTO;
 import tw.ispan.librarysystem.entity.books.BookEntity;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class BookMapper {
@@ -34,6 +35,10 @@ public class BookMapper {
         
         if (entity.getCategory() != null) {
             dto.setcId(entity.getCategory().getcId());
+        }
+        
+        if (entity.getCategory() != null && entity.getCategory().getCategorysystem() != null) {
+            dto.setCategorysystem(entity.getCategory().getCategorysystem().getCsName());
         }
         
         return dto;

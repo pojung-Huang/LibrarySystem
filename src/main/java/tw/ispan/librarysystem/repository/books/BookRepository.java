@@ -2,6 +2,8 @@ package tw.ispan.librarysystem.repository.books;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -9,9 +11,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tw.ispan.librarysystem.entity.books.BookEntity;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Integer>,JpaSpecificationExecutor<BookEntity> {
+    
+    Optional<BookEntity> findByIsbn(String isbn);
+
+    // 🔸 為 Specification 查詢加上 EntityGraph，解決 lazy loading 問題
+    @Override
+    @EntityGraph(attributePaths = {"category", "category.categorysystem"})
+    Page<BookEntity> findAll(Specification<BookEntity> spec, Pageable pageable);
+    
     // 基本搜尋
     List<BookEntity> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(String title, String author);
     
