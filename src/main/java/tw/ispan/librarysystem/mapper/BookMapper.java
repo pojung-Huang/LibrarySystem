@@ -33,6 +33,8 @@ public class BookMapper {
         dto.setUpdatedAt(entity.getUpdatedAt());
         dto.setClassification(entity.getClassification());
         
+        
+        
         if (entity.getCategory() != null) {
             dto.setcId(entity.getCategory().getcId());
         }
@@ -40,6 +42,9 @@ public class BookMapper {
         if (entity.getCategory() != null && entity.getCategory().getCategorysystem() != null) {
             dto.setCategorysystem(entity.getCategory().getCategorysystem().getCsName());
         }
+        
+        dto.setSummary(entity.getBookDetail() != null ? entity.getBookDetail().getSummary() : null);
+        dto.setImgUrl(entity.getBookDetail() != null ? entity.getBookDetail().getImgUrl() : null);
         
         return dto;
     }

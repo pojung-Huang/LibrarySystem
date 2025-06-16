@@ -24,8 +24,26 @@ public class BookDTO {
     private String classification;
     @JsonProperty("categorysystem")
     private String categorysystem;
+    private String summary;
+    private String imgUrl;
 
     
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     // 建構函數
     public BookDTO() {}
