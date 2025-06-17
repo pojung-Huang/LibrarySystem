@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tw.ispan.librarysystem.entity.borrow.Borrow;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -16,7 +19,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id") // 告訴 JPA 對應到 user_id 欄位
-    private Long id;
+    private Integer id;
 
     private String name;
     private String gender;
@@ -38,5 +41,9 @@ public class Member {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "member")
+    @JsonIgnoreProperties({"member", "book"})
+    private List<Borrow> borrows;
 }
 
