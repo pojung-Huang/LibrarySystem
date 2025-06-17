@@ -1,10 +1,13 @@
 package tw.ispan.librarysystem.entity.seat;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import tw.ispan.librarysystem.enums.SeatStatus;
 
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "seats")
 public class Seat {
