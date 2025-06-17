@@ -1,9 +1,11 @@
 package tw.ispan.librarysystem.entity.books;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import tw.ispan.librarysystem.entity.books.BookEntity;
-
+import tw.ispan.librarysystem.entity.borrow.Borrow;
+import java.util.List;
 
 @Entity
 @Table(name = "books")  // 修改為 books 表
@@ -57,6 +59,10 @@ public class BookEntity {
 
     @Column(name = "classification")
     private String classification;
+
+    @OneToMany(mappedBy = "book")
+    @JsonIgnoreProperties({"member", "book"})
+    private List<Borrow> borrows;
 
     public Integer getBookId() {
         return bookId;
@@ -177,4 +183,12 @@ public class BookEntity {
 
     @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     private BookDetailEntity bookDetail;
+
+    public List<Borrow> getBorrows() {
+        return borrows;
+    }
+
+    public void setBorrows(List<Borrow> borrows) {
+        this.borrows = borrows;
+    }
 }
