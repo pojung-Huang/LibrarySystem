@@ -14,6 +14,14 @@ public class BookEntity {
     @Column(name = "book_id")
     private Integer bookId;
 
+    public BookDetailEntity getBookDetail() {
+        return bookDetail;
+    }
+
+    public void setBookDetail(BookDetailEntity bookDetail) {
+        this.bookDetail = bookDetail;
+    }
+
     @Column(name = "isbn")
     private String isbn;
 
@@ -166,4 +174,7 @@ public class BookEntity {
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
+
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    private BookDetailEntity bookDetail;
 }
