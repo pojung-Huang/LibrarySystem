@@ -2,6 +2,7 @@ package tw.ispan.librarysystem.entity.seat;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import tw.ispan.librarysystem.enums.SeatStatus;
 
 import java.time.LocalDateTime;
 
