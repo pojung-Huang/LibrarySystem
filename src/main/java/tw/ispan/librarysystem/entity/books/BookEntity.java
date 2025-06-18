@@ -1,9 +1,11 @@
 package tw.ispan.librarysystem.entity.books;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import tw.ispan.librarysystem.entity.books.BookEntity;
-
+import tw.ispan.librarysystem.entity.borrow.Borrow;
+import java.util.List;
 
 @Entity
 @Table(name = "books")  // 修改為 books 表
@@ -13,6 +15,14 @@ public class BookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     private Integer bookId;
+
+    public BookDetailEntity getBookDetail() {
+        return bookDetail;
+    }
+
+    public void setBookDetail(BookDetailEntity bookDetail) {
+        this.bookDetail = bookDetail;
+    }
 
     @Column(name = "isbn")
     private String isbn;
@@ -49,6 +59,10 @@ public class BookEntity {
 
     @Column(name = "classification")
     private String classification;
+
+    @OneToMany(mappedBy = "book")
+    @JsonIgnoreProperties({"member", "book"})
+    private List<Borrow> borrows;
 
     public Integer getBookId() {
         return bookId;
@@ -154,8 +168,8 @@ public class BookEntity {
         this.updatedAt = updatedAt;
     }
 
-    //---------------------
-    @ManyToOne(fetch = FetchType.LAZY)
+    //---------------------多對一：一本書屬於一個分類
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "c_id")
     private CategoryEntity category;
 
@@ -166,4 +180,15 @@ public class BookEntity {
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
-} 
+
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    private BookDetailEntity bookDetail;
+
+    public List<Borrow> getBorrows() {
+        return borrows;
+    }
+
+    public void setBorrows(List<Borrow> borrows) {
+        this.borrows = borrows;
+    }
+}

@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import tw.ispan.librarysystem.entity.books.BookDetailEntity;
 import tw.ispan.librarysystem.entity.books.BookEntity;
+import tw.ispan.librarysystem.repository.books.BookDetailRepository;
 import tw.ispan.librarysystem.repository.books.BookRepository;
 import tw.ispan.librarysystem.dto.SearchCondition;
 import jakarta.persistence.criteria.Predicate;
@@ -26,6 +29,28 @@ public class BookService {
         return bookRepository.searchBooks(title, author, publisher, isbn, classification, yearFrom, yearTo, language, pageable);
     }
 
+    @Autowired
+    private BookDetailRepository bookDetailRepository;
+
+    /**
+     * 根據書籍與外部 API 資訊，儲存或更新書籍詳細資料（封面與摘要）
+     */
+    public void updateBookDetail(BookEntity book, String coverUrl, String summary) {
+        try {
+            // 先查詢是否已有該書的詳細資料
+            Optional<BookDetailEntity> existing = bookDetailRepository.findByBook(book);
+
+            BookDetailEntity detail = existing.orElseGet(BookDetailEntity::new);
+            detail.setBook(book); // 綁定主鍵（@MapsId）
+            detail.setImgUrl(coverUrl);
+            detail.setSummary(summary);
+
+            bookDetailRepository.save(detail); // 寫入資料庫
+        } catch (Exception e) {
+            System.err.println("更新書籍封面與摘要失敗: " + e.getMessage());
+        }
+    }
+
     // 查詢全部
     public Page<BookEntity> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable);
@@ -44,6 +69,10 @@ public class BookService {
     // 刪除
     public void deleteById(Integer id) {
         bookRepository.deleteById(id);
+    }
+
+    public Optional<BookEntity> findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
     }
 
     public Page<BookEntity> advancedSearch(List<SearchCondition> conditions, Pageable pageable) {
@@ -89,6 +118,17 @@ public class BookService {
                             // 解析失敗可略過
                         }
                         break;
+                    case "categorysystem":
+                        try {
+                            var json = objectMapper.readTree(cond.getValue());
+                            if (json.has("cs_id")) {
+                                String csId = json.get("cs_id").asText();
+                                p = cb.equal(cb.lower(root.get("category").get("system").get("code")), csId.toLowerCase());
+                            }
+                        } catch (Exception e) {
+                            // JSON 格式錯誤略過處理
+                        }
+                        break;
                     // 其他欄位可依需求擴充
                 }
                 if (p != null) {
@@ -118,6 +158,8 @@ public class BookService {
                     return cb.like(cb.lower(root.get("isbn")), "%" + keyword.toLowerCase() + "%");
                 case "classification":
                     return cb.equal(root.get("classification"), keyword);
+                case "categorysystem":
+                    return cb.like(cb.lower(root.get("categorysystem").get("csName")), "%" + keyword.toLowerCase() + "%");
                 // 其他欄位可依需求擴充
                 default:
                     return cb.conjunction();
@@ -125,4 +167,6 @@ public class BookService {
         };
         return bookRepository.findAll(spec, pageable);
     }
+
+    
 } 

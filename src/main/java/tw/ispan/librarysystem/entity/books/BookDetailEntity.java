@@ -1,6 +1,12 @@
 package tw.ispan.librarysystem.entity.books;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bookdetail")
@@ -16,45 +22,42 @@ public class BookDetailEntity {
     @Column(name = "img_url")
     private String imgUrl;
 
-     /**
-     * owning side：告訴 JPA 這個欄位要 join books.book_id，
-     * 並且用 @MapsId 把 PK 的值和 book.getId() 綁在一起
-     */
+    @OneToOne
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private BookEntity book;
-    // Getters
+
     public Integer getBookId() {
         return bookId;
+    }
+
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public String getSummary() {
         return summary;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public BookEntity getBook() {
-        return book;
-    }
-
-    // Setters
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
-    }
-
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
     }
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
 
+    public BookEntity getBook() {
+        return book;
+    }
+
     public void setBook(BookEntity book) {
         this.book = book;
     }
+
+    
 }

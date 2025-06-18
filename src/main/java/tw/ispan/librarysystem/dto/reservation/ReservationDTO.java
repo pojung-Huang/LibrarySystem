@@ -1,4 +1,4 @@
-package tw.ispan.librarysystem.dto;
+package tw.ispan.librarysystem.dto.reservation;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
