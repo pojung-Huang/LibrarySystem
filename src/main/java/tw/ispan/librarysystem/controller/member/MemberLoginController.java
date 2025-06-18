@@ -13,6 +13,7 @@ import tw.ispan.librarysystem.dto.member.MemberLoginDto;
 import tw.ispan.librarysystem.entity.member.Member;
 import tw.ispan.librarysystem.service.member.MemberService;
 import tw.ispan.librarysystem.util.JwtTool;
+import tw.ispan.librarysystem.security.CheckJwt;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -62,6 +63,7 @@ public class MemberLoginController {
     }
 
     @PostMapping("/validate")
+    @CheckJwt
     public ResponseEntity<Map<String, Object>> validateToken(@RequestHeader("Authorization") String authHeader) {
         try {
             // 移除 "Bearer " 前綴
@@ -97,5 +99,11 @@ public class MemberLoginController {
             response.put("message", "Token 驗證失敗：" + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+    }
+
+    @GetMapping("/test")
+    @CheckJwt
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("test");
     }
 }
