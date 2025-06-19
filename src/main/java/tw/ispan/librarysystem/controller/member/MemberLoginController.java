@@ -50,7 +50,9 @@ public class MemberLoginController {
             response.put("user", Map.of(
                     "id", member.getId(),
                     "name", member.getName(),
-                    "email", member.getEmail()));
+                    "email", member.getEmail(),
+                    "jwt", token,
+                    "jwt_exp", JwtTool.getExpirationTime(token)));
 
             return ResponseEntity.ok(response);
 
@@ -82,7 +84,10 @@ public class MemberLoginController {
                 response.put("user", Map.of(
                         "id", member.getId(),
                         "name", member.getName(),
-                        "email", member.getEmail()));
+                        "email", member.getEmail(),
+                        "jwt", token,
+                        "jwt_exp", JwtTool.getExpirationTime(token)));
+
                 return ResponseEntity.ok(response);
             } else {
                 Map<String, Object> response = new HashMap<>();
