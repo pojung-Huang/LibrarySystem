@@ -8,15 +8,21 @@ import tw.ispan.librarysystem.dto.reservation.ReservationDTO;
 import tw.ispan.librarysystem.dto.reservation.ReservationBatchRequestDTO;
 import tw.ispan.librarysystem.dto.reservation.ReservationResponseDTO;
 import tw.ispan.librarysystem.dto.reservation.ReservationHistoryDTO;
+import tw.ispan.librarysystem.dto.reservation.ReservationConfirmRequest;
+import tw.ispan.librarysystem.dto.reservation.ApiResponse;
 import tw.ispan.librarysystem.entity.reservation.ReservationEntity;
+import tw.ispan.librarysystem.entity.reservation.ReservationLogEntity;
 import tw.ispan.librarysystem.repository.reservation.ReservationRepository;
-import tw.ispan.librarysystem.service.ReservationService;
+import tw.ispan.librarysystem.service.reservation.ReservationService;
+import tw.ispan.librarysystem.service.reservation.ReservationLogService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bookreservations")
@@ -28,6 +34,9 @@ public class ReservationController {
     
     @Autowired
     private ReservationService reservationService;
+    
+    @Autowired
+    private ReservationLogService reservationLogService;
 
     // 查詢用戶預約清單
     @GetMapping
@@ -193,6 +202,54 @@ public class ReservationController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<ApiResponse> confirmReservation(@RequestBody ReservationConfirmRequest request) {
+        try {
+            // 1. 檢查預約日誌是否存在
+            Optional<ReservationLogEntity> logOpt = reservationLogService.getLogById(request.getLogId());
+            if (!logOpt.isPresent()) {
+                return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "找不到預約日誌記錄"));
+            }
+            
+            ReservationLogEntity log = logOpt.get();
+            
+            // 2. 檢查使用者身份
+            if (!log.getUserId().equals(request.getUserId())) {
+                return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "無權限確認此預約"));
+            }
+            
+            // 3. 檢查書籍是否一致
+            if (!log.getBook().getBookId().equals(request.getBookId())) {
+                return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "書籍資訊不符"));
+            }
+            
+            // 4. 檢查狀態是否為 PENDING
+            if (!"PENDING".equals(log.getStatus())) {
+                return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "此預約已被處理"));
+            }
+            
+            // 5. 建立正式預約記錄
+            ReservationEntity reservation = reservationService.createReservation(log);
+            
+            // 6. 更新預約日誌狀態
+            reservationLogService.updateLogStatus(log, "CONFIRMED");
+            
+            // 7. 建立回應
+            ApiResponse response = new ApiResponse(true, "預約確認成功");
+            response.setReservationId(reservation.getReservationId());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body(new ApiResponse(false, e.getMessage()));
         }
     }
 } 
