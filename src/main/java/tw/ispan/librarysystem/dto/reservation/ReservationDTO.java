@@ -18,8 +18,8 @@ public class ReservationDTO {
     @JsonProperty("user_id")
     private Integer userId;
     
-    @JsonProperty("reservation_date")
-    private LocalDateTime reservationDate;
+    @JsonProperty("reserve_time")
+    private LocalDateTime reserveTime;
     
     @JsonProperty("expiry_date")
     private LocalDateTime expiryDate;
@@ -52,11 +52,14 @@ public class ReservationDTO {
     @JsonProperty("pickup_time")
     private LocalDateTime pickupTime;
 
+    @JsonProperty("batch_id")
+    private String batchId;
+
     // ✅ 新增這段 constructor 給 JPQL 使用
-    public ReservationDTO(Integer reservationId, String status, String title, LocalDateTime reservationDate) {
+    public ReservationDTO(Integer reservationId, String status, String title, LocalDateTime reserveTime) {
         this.reservationId = reservationId;
         this.status = status;
         this.title = title;
-        this.reservationDate = reservationDate;
+        this.reserveTime = reserveTime;
     }
 }

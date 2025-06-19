@@ -20,8 +20,8 @@ public class ReservationEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "reservation_date")
-    private LocalDateTime reservationDate;
+    @Column(name = "reserve_time")
+    private LocalDateTime reserveTime;
 
     @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
@@ -34,6 +34,9 @@ public class ReservationEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "batch_id")
+    private String batchId;
 
     // Getters and Setters
     public Integer getReservationId() {
@@ -60,12 +63,12 @@ public class ReservationEntity {
         this.userId = userId;
     }
 
-    public LocalDateTime getReservationDate() {
-        return reservationDate;
+    public LocalDateTime getReserveTime() {
+        return reserveTime;
     }
 
-    public void setReservationDate(LocalDateTime reservationDate) {
-        this.reservationDate = reservationDate;
+    public void setReserveTime(LocalDateTime reserveTime) {
+        this.reserveTime = reserveTime;
     }
 
     public LocalDateTime getExpiryDate() {
@@ -98,5 +101,28 @@ public class ReservationEntity {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationEntity{" +
+                "reservationId=" + reservationId +
+                ", bookId=" + (book != null ? book.getBookId() : "null") +
+                ", userId=" + userId +
+                ", reserveTime=" + reserveTime +
+                ", expiryDate=" + expiryDate +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", batchId='" + batchId + '\'' +
+                '}';
     }
 }
