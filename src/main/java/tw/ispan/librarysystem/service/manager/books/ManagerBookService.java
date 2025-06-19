@@ -87,25 +87,29 @@ public class ManagerBookService {
             ObjectMapper objectMapper = new ObjectMapper();
             for (SearchCondition cond : conditions) {
                 Predicate p = null;
+
+                String valueStr = cond.getValue().asText();
                 switch (cond.getField()) {
+
                     case "title":
-                        p = cb.like(cb.lower(root.get("title")), "%" + cond.getValue().toLowerCase() + "%");
+                        p = cb.like(cb.lower(root.get("title")), "%" + valueStr.toLowerCase() + "%");
                         break;
                     case "author":
-                        p = cb.like(cb.lower(root.get("author")), "%" + cond.getValue().toLowerCase() + "%");
+                        p = cb.like(cb.lower(root.get("author")), "%" + valueStr.toLowerCase() + "%");
                         break;
                     case "publisher":
-                        p = cb.like(cb.lower(root.get("publisher")), "%" + cond.getValue().toLowerCase() + "%");
+                        p = cb.like(cb.lower(root.get("publisher")), "%" + valueStr.toLowerCase() + "%");
                         break;
                     case "isbn":
-                        p = cb.like(cb.lower(root.get("isbn")), "%" + cond.getValue().toLowerCase() + "%");
+                        p = cb.like(cb.lower(root.get("isbn")), "%" + valueStr.toLowerCase() + "%");
                         break;
                     case "classification":
-                        p = cb.equal(root.get("classification"), cond.getValue());
+                        p = cb.equal(root.get("classification"), valueStr);
                         break;
                     case "publishdate":
                         try {
-                            var node = objectMapper.readTree(cond.getValue());
+                            var node = objectMapper.readTree(valueStr.toString());
+
                             String from = node.has("from") ? node.get("from").asText() : null;
                             String to = node.has("to") ? node.get("to").asText() : null;
                             if (from != null && !from.isEmpty()) {
@@ -122,7 +126,9 @@ public class ManagerBookService {
                         break;
                     case "categorysystem":
                         try {
-                            var json = objectMapper.readTree(cond.getValue());
+
+                            var json = objectMapper.readTree(valueStr);
+
                             if (json.has("cs_id")) {
                                 String csId = json.get("cs_id").asText();
                                 p = cb.equal(cb.lower(root.get("category").get("system").get("code")),
