@@ -87,6 +87,7 @@ public class ManagerBookService {
             ObjectMapper objectMapper = new ObjectMapper();
             for (SearchCondition cond : conditions) {
                 Predicate p = null;
+
                 String valueStr = cond.getValue().asText();
                 switch (cond.getField()) {
 
@@ -108,6 +109,7 @@ public class ManagerBookService {
                     case "publishdate":
                         try {
                             var node = objectMapper.readTree(valueStr.toString());
+
                             String from = node.has("from") ? node.get("from").asText() : null;
                             String to = node.has("to") ? node.get("to").asText() : null;
                             if (from != null && !from.isEmpty()) {
@@ -124,7 +126,9 @@ public class ManagerBookService {
                         break;
                     case "categorysystem":
                         try {
+
                             var json = objectMapper.readTree(valueStr);
+
                             if (json.has("cs_id")) {
                                 String csId = json.get("cs_id").asText();
                                 p = cb.equal(cb.lower(root.get("category").get("system").get("code")),
