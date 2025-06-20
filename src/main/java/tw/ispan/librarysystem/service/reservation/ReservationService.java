@@ -1,11 +1,12 @@
 // @SuppressWarnings("SpellCheckingInspection")
-package tw.ispan.librarysystem.service;
+package tw.ispan.librarysystem.service.reservation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tw.ispan.librarysystem.dto.reservation.ReservationDTO;
 import tw.ispan.librarysystem.dto.reservation.ReservationHistoryDTO;
 import tw.ispan.librarysystem.entity.reservation.ReservationEntity;
+import tw.ispan.librarysystem.entity.reservation.ReservationLogEntity;
 import tw.ispan.librarysystem.repository.reservation.ReservationRepository;
 
 import java.time.LocalDateTime;
@@ -98,6 +99,20 @@ public class ReservationService {
         }
         
         return reservationRepository.save(entity);
+    }
+
+    // 從預約日誌建立正式預約
+    public ReservationEntity createReservation(ReservationLogEntity log) {
+        ReservationEntity reservation = new ReservationEntity();
+        reservation.setUserId(log.getUserId().intValue()); // 轉換 Long 到 Integer
+        reservation.setBook(log.getBook());
+        reservation.setReserveTime(log.getReserveTime());
+        reservation.setStatus("PENDING");
+        reservation.setCreatedAt(LocalDateTime.now());
+        reservation.setUpdatedAt(LocalDateTime.now());
+        reservation.setExpiryDate(log.getReserveTime().plusDays(3));
+        
+        return reservationRepository.save(reservation);
     }
 
     // 新增：查詢特定用戶的預約歷史

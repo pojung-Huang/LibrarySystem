@@ -17,7 +17,9 @@ public class JwtTool {
     // 延長 token 有效時間到 24 小時
     private static final long EXP_TIME = 24 * 60 * 60 * 1000; // 24小時
 
+
     // private static final long EXP_TIME = 10 * 1000; // 10秒
+
     private static final String SECRET = "A9f2kLm8Qw7zX1pR4sV6bT0yH3jN5uCk";
     private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
