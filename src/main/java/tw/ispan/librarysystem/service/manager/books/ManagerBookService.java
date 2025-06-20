@@ -25,7 +25,7 @@ public class ManagerBookService {
 
     // 進階搜尋
     public Page<BookEntity> searchBooks(String title, String author, String publisher, String isbn,
-            String classification, String yearFrom, String yearTo, String language, Pageable pageable) {
+                                        String classification, String yearFrom, String yearTo, String language, Pageable pageable) {
         return bookRepository.searchBooks(title, author, publisher, isbn, classification, yearFrom, yearTo, language,
                 pageable);
     }
@@ -87,66 +87,75 @@ public class ManagerBookService {
             ObjectMapper objectMapper = new ObjectMapper();
             for (SearchCondition cond : conditions) {
                 Predicate p = null;
-                switch (cond.getField()) {
-                    case "title":
-                        p = cb.like(cb.lower(root.get("title")), "%" + cond.getValue().toLowerCase() + "%");
-                        break;
-                    case "author":
-                        p = cb.like(cb.lower(root.get("author")), "%" + cond.getValue().toLowerCase() + "%");
-                        break;
-                    case "publisher":
-                        p = cb.like(cb.lower(root.get("publisher")), "%" + cond.getValue().toLowerCase() + "%");
-                        break;
-                    case "isbn":
-                        p = cb.like(cb.lower(root.get("isbn")), "%" + cond.getValue().toLowerCase() + "%");
-                        break;
-                    case "classification":
-                        p = cb.equal(root.get("classification"), cond.getValue());
-                        break;
-                    case "publishdate":
-                        try {
-                            var node = objectMapper.readTree(cond.getValue());
-                            String from = node.has("from") ? node.get("from").asText() : null;
-                            String to = node.has("to") ? node.get("to").asText() : null;
-                            if (from != null && !from.isEmpty()) {
-                                p = cb.greaterThanOrEqualTo(cb.substring(root.get("publishdate"), 1, 4), from);
+                try {
+                    String field = cond.getField();
+                    String op = cond.getOperator();
+                    String val = cond.getValue() != null ? cond.getValue().asText() : "";
+
+                    switch (field) {
+                        case "title":
+                            p = cb.like(cb.lower(root.get("title")), "%" + val.toLowerCase() + "%");
+                            break;
+                        case "author":
+                            p = cb.like(cb.lower(root.get("author")), "%" + val.toLowerCase() + "%");
+                            break;
+                        case "publisher":
+                            p = cb.like(cb.lower(root.get("publisher")), "%" + val.toLowerCase() + "%");
+                            break;
+                        case "isbn":
+                            p = cb.like(cb.lower(root.get("isbn")), "%" + val.toLowerCase() + "%");
+                            break;
+                        case "classification":
+                            p = cb.equal(root.get("classification"), val);
+                            break;
+                        case "publishdate":
+                            try {
+                                var node = objectMapper.readTree(val);
+                                String from = node.has("from") ? node.get("from").asText() : null;
+                                String to = node.has("to") ? node.get("to").asText() : null;
+                                if (from != null && !from.isEmpty()) {
+                                    p = cb.greaterThanOrEqualTo(cb.substring(root.get("publishdate"), 1, 4), from);
+                                }
+                                if (to != null && !to.isEmpty()) {
+                                    Predicate toPredicate = cb.lessThanOrEqualTo(cb.substring(root.get("publishdate"), 1, 4), to);
+                                    p = (p == null) ? toPredicate : cb.and(p, toPredicate);
+                                }
+                            } catch (Exception e) {
+                                // 解析失敗略過
                             }
-                            if (to != null && !to.isEmpty()) {
-                                Predicate toPredicate = cb
-                                        .lessThanOrEqualTo(cb.substring(root.get("publishdate"), 1, 4), to);
-                                p = (p == null) ? toPredicate : cb.and(p, toPredicate);
+                            break;
+                        case "categorysystem":
+                            try {
+                                var json = objectMapper.readTree(val);
+                                if (json.has("cs_id")) {
+                                    String csId = json.get("cs_id").asText();
+                                    p = cb.equal(cb.lower(root.get("category").get("system").get("code")), csId.toLowerCase());
+                                }
+                            } catch (Exception e) {
+                                // JSON 格式錯誤略過
                             }
-                        } catch (Exception e) {
-                            // 解析失敗可略過
-                        }
-                        break;
-                    case "categorysystem":
-                        try {
-                            var json = objectMapper.readTree(cond.getValue());
-                            if (json.has("cs_id")) {
-                                String csId = json.get("cs_id").asText();
-                                p = cb.equal(cb.lower(root.get("category").get("system").get("code")),
-                                        csId.toLowerCase());
-                            }
-                        } catch (Exception e) {
-                            // JSON 格式錯誤略過處理
-                        }
-                        break;
-                    // 其他欄位可依需求擴充
-                }
-                if (p != null) {
-                    if ("AND".equalsIgnoreCase(cond.getOperator())) {
-                        predicate = cb.and(predicate, p);
-                    } else if ("OR".equalsIgnoreCase(cond.getOperator())) {
-                        predicate = cb.or(predicate, p);
-                    } else if ("NOT".equalsIgnoreCase(cond.getOperator())) {
-                        predicate = cb.and(predicate, cb.not(p));
+                            break;
+                        // 其他欄位可依需求擴充
                     }
+
+                    if (p != null) {
+                        if ("AND".equalsIgnoreCase(op)) {
+                            predicate = cb.and(predicate, p);
+                        } else if ("OR".equalsIgnoreCase(op)) {
+                            predicate = cb.or(predicate, p);
+                        } else if ("NOT".equalsIgnoreCase(op)) {
+                            predicate = cb.and(predicate, cb.not(p));
+                        }
+                    }
+
+                } catch (Exception e) {
+                    // 捕捉 cond.getValue() 轉字串異常，繼續下一條件
                 }
             }
             return predicate;
         };
     }
+
 
     public Page<BookEntity> simpleSearch(String field, String keyword, Pageable pageable) {
         Specification<BookEntity> spec = (root, query, cb) -> {
