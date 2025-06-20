@@ -7,8 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tw.ispan.librarysystem.service.reservation.ReservationLogService;
 import tw.ispan.librarysystem.entity.reservation.ReservationLogEntity;
+import tw.ispan.librarysystem.dto.reservation.ReservationLogDTO;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import tw.ispan.librarysystem.repository.books.BookRepository;
+import tw.ispan.librarysystem.entity.books.BookEntity;
 
 @RestController
 @RequestMapping("/api/reservation-logs")
@@ -19,6 +24,9 @@ public class ReservationLogController {
 
     @Autowired
     private ReservationLogService reservationLogService;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> addReservationLog(@RequestBody Map<String, Object> request) {
@@ -72,5 +80,29 @@ public class ReservationLogController {
             response.put("message", "系統錯誤：" + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
+    }
+
+    @GetMapping
+    public List<ReservationLogDTO> getLogsByUserId(@RequestParam("userId") Long userId) {
+        // 查詢該 userId 的所有 reservation_logs
+        List<ReservationLogEntity> logs = reservationLogService.getLogsByUserId(userId);
+        return logs.stream().map(log -> {
+            ReservationLogDTO dto = new ReservationLogDTO();
+            dto.setLogId(log.getId());
+            dto.setUserId(log.getUserId());
+            dto.setBookId(log.getBookId());
+            dto.setAction(log.getAction());
+            dto.setStatus(log.getStatus());
+            dto.setMessage(log.getMessage());
+            dto.setCreatedAt(log.getCreatedAt());
+            dto.setReserveTime(log.getReserveTime());
+            // 查書名、作者
+            BookEntity book = bookRepository.findById(log.getBookId().intValue()).orElse(null);
+            if (book != null) {
+                dto.setTitle(book.getTitle());
+                dto.setAuthor(book.getAuthor());
+            }
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
