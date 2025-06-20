@@ -67,4 +67,41 @@ public class ReservationLogService {
     public List<ReservationLogEntity> getUserLogs(Long userId) {
         return getLogsByUserId(userId);
     }
+
+    /**
+     * 刪除單個預約日誌
+     * @param logId 日誌ID
+     * @return 是否刪除成功
+     */
+    public boolean deleteLogById(Long logId) {
+        try {
+            if (reservationLogRepository.existsById(logId)) {
+                reservationLogRepository.deleteById(logId);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("刪除預約日誌失敗: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 批量刪除預約日誌
+     * @param logIds 日誌ID列表
+     * @return 刪除成功的數量
+     */
+    public int deleteLogsByIds(List<Long> logIds) {
+        try {
+            int deletedCount = 0;
+            for (Long logId : logIds) {
+                if (reservationLogRepository.existsById(logId)) {
+                    reservationLogRepository.deleteById(logId);
+                    deletedCount++;
+                }
+            }
+            return deletedCount;
+        } catch (Exception e) {
+            throw new RuntimeException("批量刪除預約日誌失敗: " + e.getMessage());
+        }
+    }
 } 
